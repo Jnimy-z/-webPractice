@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: rgba(38, 235, 235, 0.616);
+        }
+
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+
+        div {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            overflow: hidden;
+            margin: 50px auto;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        li {
+            list-style: none;
+            float: left;
+            width: 400px;
+            height: 300px;
+        }
+
+        .clearfix::before, .clearfix::after {
+            content: '';
+            display: table;
+        }
+
+        .clearfix::after {
+            clear: both;
+        }
+
+        .clearfix {
+            *zoom: 1;
+        }
+
+        ul {
+            position: absolute;
+            left: 0;
+        }
+
+        div>button {
+            position: absolute;
+            display: none;
+            z-index: 1;
+            top: 150px;
+            background-color: rgba(255, 217, 0, 0.37);
+            font-size: 35px;
+            padding: 2px 5px;
+            color: rgba(128, 128, 128, 0.925);
+        }
+        div>.left {
+            left: 0;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        div>.right {
+            right: 0;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+
+        .dot {
+            position: absolute;
+            margin: 0;
+            z-index: 1;
+            height: 20px;
+            left: calc(50% - 40px);
+            bottom: 6px;
+        }
+
+        span {
+            display: block;
+            float: left;
+            width: 14px;
+            height: 14px;
+            margin: 3px;
+            border-radius: 7px;
+            border: 1px solid rgba(0, 0, 0, 0.74);
+        }
+
+        .color {
+            background-color: rgba(91, 167, 233, 0.884);
+        }
+
+    </style>
+
+</head>
+
+<body>
+        <div>
+            <ul class="clearfix">
+                <!-- 多加一个标签是为了从最后一个到第一个图片的切换更加自然 -->
+                <li><img src="./lunbotu/6.jpg" alt=""></li>
+                <li><img src="./lunbotu/1.jpg" alt=""></li>
+                <li><img src="./lunbotu/2.jpg" alt=""></li>
+                <li><img src="./lunbotu/3.jpg" alt=""></li>
+                <li><img src="./lunbotu/4.jpg" alt=""></li>
+                <li><img src="./lunbotu/5.jpg" alt=""></li>
+            </ul>
+            <div class="dot">
+            </div>
+            <button class="left">&lt;</button><button class="right">&gt;</button>
+        </div>
+    <script>
+        var div = document.querySelector('div')
+        var ul = document.querySelector('ul')
+        var btnLeft = document.querySelector('.left')
+        var btnRight = document.querySelector('.right')
+        //克隆第一张图片
+        var newLi = ul.children[0].cloneNode(true)
+        ul.appendChild(newLi)
+        var li = ul.querySelectorAll('li')
+        ul.style.width = li[0].offsetWidth * li.length + 'px'
+        // 利用小圆点切换效果
+        var dot = document.querySelector('.dot')
+        //动态创建圆点
+        var span = []
+        console.log(li.length)
+        for (var i = 0; i < li.length-1; i++) {
+            span[i] = document.createElement('span')
+            span[i].setAttribute("index", i)
+            dot.appendChild(span[i])
+        }
+        span[0].className = 'color'
+
+        //鼠标经过时显示左右按钮
+        div.addEventListener('mouseenter', function () {
+            btnLeft.style.display = 'block'
+            btnRight.style.display = 'block'
+            // 停止轮播
+            clearInterval(ine)
+        })
+        //鼠标离开时隐藏左右按钮
+        div.addEventListener('mouseleave', function () {
+            btnLeft.style.display = 'none'
+            btnRight.style.display = 'none'
+            ine = setInterval(fRight, 2000)
+        })
+
+        // 事件委托
+        dot.addEventListener('click', function (e) {
+            //不让dot触发点击事件
+            if (e.target.tagName === 'SPAN') {
+                //获取的属性值是string类型的
+                var index = e.target.getAttribute('index')
+                var preLth = ul.offsetLeft
+                moveOfmy(ul, -((parseInt(index) + 1)*li[0].offsetWidth + preLth), e.target)
+            }
+        })
+
+        //自动轮播
+        var ine = setInterval(
+            fRight
+            //手动调用右侧按钮的事件(两种写法都可以)
+            // function () {
+            //     btnRight.click()
+            // }
+            , 2000)
+
+
+        btnLeft.addEventListener('click', fLeft)
+        btnRight.addEventListener('click', fRight)
+        function fLeft() {
+            moveOfmy(ul, li[0].offsetWidth)
+        }
+        function fRight() {
+            moveOfmy(ul, -li[0].offsetWidth)
+        }
+        //一个匀速运动的动画
+        function moveOfmy(target, lth, circle) {
+            console.log('again')
+            //实现无缝切换
+            if (lth > 0 && target.offsetLeft >= 0) {
+                // 为left赋值时一定要加'px'！！！
+                target.style.left = -(li.length - 1) * li[0].offsetWidth + 'px'
+            }else if (lth < 0 && target.offsetLeft <= -(li.length - 1) * li[0].offsetWidth) {
+                target.style.left = 0
+            }
+            console.log(lth)
+            var vv = lth / 10
+            var temp = 0
+            var timer = setInterval(function () {
+                console.log('temp:' + temp)
+                if(temp === 10) {
+                    clearInterval(timer)
+                    //让下面的点跟随轮播图改变位置
+                    for (var i = 0; i < span.length; i++){
+                        span[i].className = ''
+                    }
+                    //如果有参数表示发生了点击事件，就改变被点击的元素的颜色
+                    if(circle){
+                        circle.className = 'color'
+                    }else {
+                        var index = -ul.offsetLeft / li[0].offsetWidth
+                        console.log(index)
+                        console.log('-----------------------------')
+                        if(index === li.length - 1){
+                            index = 0
+                        } 
+                        span[index].className = 'color'
+                    }
+                }else{
+                    //这里要用e.offsetLeft获取，因为style.left只能获取行内样式
+                    target.style.left = parseInt(target.offsetLeft) + vv + 'px'
+                    temp++
+                }
+            }, 30)
+        }
+    </script>
+</body>
+
+</html>
