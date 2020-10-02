@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            width: 200px;
+        }
+        .top {
+            width: 50px;
+            height: 50px;
+            position: fixed;
+            right: 0;
+            top: 400px;
+            background-color: aqua;
+            text-align: center;
+            line-height: 50px;
+            font-family: 'iconfont';
+            font-size: 24px;
+            display: none;
+        }
+        @font-face {
+            font-family: 'iconfont';
+            src: url('./fonts/');
+            src: url('./fonts/?#iefix') format('embedded-opentype'),
+                url('./fonts/iconfont.woff2') format('woff2'),
+                url('./fonts/iconfont.woff') format('woff'),
+                url('./fonts/iconfont.ttf') format('truetype'),
+                url('./fonts/iconfont.svg#iconfont') format('svg');
+            }
+    </style>
+
+</head>
+
+<body>
+    <div>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis perspiciatis nam possimus inventore dolorem tenetur nisi. Eveniet corrupti voluptates atque corporis, debitis incidunt. Itaque, debitis ullam minima esse at numquam rem quaerat sequi repellendus nesciunt asperiores voluptatibus, nam facilis quibusdam recusandae! Aperiam magnam iure dolorem accusamus ipsum odit enim, dolorum veritatis repellat, dicta distinctio, ea vitae tempora tempore soluta dolor hic obcaecati quod molestias quam eveniet? In nemo fugit incidunt assumenda ex! Quod cupiditate sunt quia provident ut sit voluptas eveniet! Blanditiis et est quas ex, alias vitae. Nam tenetur magni quo optio quia ipsum deleniti aspernatur itaque neque ad in, ea officia labore voluptatum maxime praesentium dolor eveniet. Doloremque culpa reprehenderit nemo aliquid alias illum eos veritatis, iste dolorem ad cupiditate ducimus quasi a maiores officiis? Sunt commodi aperiam suscipit ab obcaecati. Distinctio praesentium deleniti nisi quam minima sint atque! Molestiae possimus et nostrum itaque repellat natus, harum, alias illum temporibus minus incidunt magni corrupti voluptatibus, rem cum expedita dolore voluptates iure dolores fugit tempora illo repudiandae nihil? Dolore obcaecati, aut corporis fugiat temporibus eius consequatur explicabo voluptatibus. Doloribus odit esse laborum temporibus perferendis quibusdam earum eaque eius officia nostrum accusantium distinctio, odio minus tenetur deserunt perspiciatis eum atque dolores fugit aliquid nihil. Ab quam voluptatem blanditiis harum velit, sit vel quisquam, atque quis voluptas tempore eligendi expedita vero ducimus debitis dicta nostrum enim. At, consequuntur corrupti culpa harum ratione illo fuga accusamus. Rem aut blanditiis ratione minima voluptate nemo quam, illo molestiae temporibus. Laboriosam eius aliquid recusandae, laborum velit, labore id nihil quas voluptatem aspernatur neque aliquam maxime autem? Beatae excepturi amet praesentium veritatis suscipit rerum laborum nam nisi dicta repudiandae officia asperiores quaerat, quos voluptate modi totam necessitatibus velit officiis. Magni assumenda dicta sint odio quisquam in, nostrum ipsum doloremque temporibus harum ex doloribus aliquam possimus, tempore vitae, ipsa beatae eligendi hic laboriosam voluptas! Doloremque, et blanditiis perferendis reiciendis iusto possimus, vero recusandae aut facere a sit harum consequuntur enim. Rem quae repudiandae aspernatur beatae minima? Accusantium ipsam reprehenderit quis illum neque suscipit, ratione excepturi dolorem magnam autem quaerat aperiam quae voluptatibus ipsa praesentium libero ad sequi earum omnis fugit. Fugit voluptatum velit at quae soluta illo quos tenetur maiores minima impedit quam recusandae corporis, dolor amet quod eligendi, temporibus odit adipisci possimus libero quibusdam laboriosam? Voluptates necessitatibus delectus architecto repellendus consectetur sapiente dolores magni deserunt odio ipsum, quidem rem deleniti eum fugit modi incidunt? Maxime dolore qui reiciendis iste pariatur ex, et hic rerum laboriosam blanditiis cupiditate ea sit nemo consequatur natus debitis, adipisci tempore error! Error voluptatibus expedita quasi odio accusamus repudiandae eius quo animi incidunt consequatur necessitatibus quisquam asperiores autem, neque ullam quam doloremque iusto, unde veritatis qui quas? Reprehenderit rerum veritatis corporis facere ipsa accusamus nobis, non nostrum voluptatibus atque dolorem numquam dolore excepturi facilis aliquam. Eveniet saepe maiores veniam excepturi laboriosam. Ipsa delectus eveniet asperiores dignissimos deleniti consectetur tempora nisi obcaecati ducimus quia repudiandae, commodi at, aspernatur totam iure! Fuga, placeat ea, ipsum sunt dicta, nesciunt aliquam laboriosam adipisci hic deserunt voluptatum!
+    </div>
+    <script>
+        window.onload = function () {
+            //添加返回顶部元素
+            var goTop = document.createElement('aside')
+            document.body.appendChild(goTop)
+            goTop.innerHTML = '&#xe633;'
+            goTop.className = 'top'
+
+            goTop.onclick = function () {
+                animation(pageYOffset)
+            }
+
+            document.addEventListener('scroll', function () {
+                console.log(pageYOffset)
+                if (window.pageYOffset >= 200) {
+                    goTop.style.display = 'block'
+                }else {
+                    goTop.style.display = 'none'
+                }
+            })
+
+            //这是一个滚动动画
+            function animation(lth) {
+                var vv = lth / 10
+                var ani = setInterval(function () {
+                   if (lth === 0) {
+                       clearInterval(ani)
+                   } else {
+                        lth -= vv
+                        scroll(0, lth)
+                   }
+                }, 30)
+            }
+            
+        }
+    </script>
+</body>
+
+</html>
