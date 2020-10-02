@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        .out{
+            position: relative;
+            background-color: rgb(18, 161, 37);
+            height: 40px;
+            margin: 50px auto;
+        }
+
+        ul {
+            position: relative;
+            background-color: transparent;
+        }
+
+        .jindouyun {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            background: url('./jindouyun.png') center/100% no-repeat;
+            left: 0;
+            top: 0;
+        }
+
+        /* 清除浮动 */
+        .clearfix::before, .clearfix::after {
+            content: '';
+            display: table;
+        }
+
+        .clear::after {
+            clear: both;
+        }
+
+        .clearfix {
+            *zoom: 1;
+        }
+
+        li {
+            list-style: none;
+            float: left;
+            background-color:transparent;
+            padding: 10px 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            z-index: 1;
+        }
+        @font-face {
+            font-family: 'iconfont';
+            src: url('./fonts/');
+            src: url('./fonts/?#iefix') format('embedded-opentype'),
+                url('./fonts/iconfont.woff2') format('woff2'),
+                url('./fonts/iconfont.woff') format('woff'),
+                url('./fonts/iconfont.ttf') format('truetype'),
+                url('./fonts/iconfont.svg#iconfont') format('svg');
+            }
+
+
+    </style>
+
+</head>
+
+<body>
+    <div class="out">
+        <span class="jindouyun"></span>
+        <ul class="clearfix">
+            <li><a href="javascript:;">菜单1</a></li>
+            <li><a href="javascript:;">菜单2</a></li>
+            <li><a href="javascript:;">菜单3</a></li>
+            <li><a href="javascript:;">菜单4</a></li>
+            <li><a href="javascript:;">菜单5</a></li>
+            <li><a href="javascript:;">菜单6</a></li>
+        </ul>
+    </div>
+    <script>
+        var ulList = document.querySelector('ul')
+        //设置最外面盒子的大小
+        var out = document.querySelector('.out')
+        var list = document.querySelectorAll('li')
+        out.style.width = list.length * list[0].offsetWidth + 'px'
+
+        //获取筋斗云盒子
+        var jindouyun = document.querySelector('.jindouyun')
+        //筋斗云当前位置
+        var current = 0
+
+        for (var i = 0; i < list.length; i++) {
+            //鼠标移动到li上面，筋斗云跟随移动到上面
+            list[i].addEventListener('mouseenter', function () {
+                //注意，在这里面不能用i了，i已经变成了list.length这个常量，因为这个函数是回调函数，会等待for运行完成才会调用
+                //jindouyun.style.left = this.offsetLeft + 'px'
+                animate(jindouyun, this.offsetLeft)
+            })
+            //鼠标离开jindouyun回到原位
+            list[i].addEventListener('mouseleave', function () {
+                //记得加px
+                //jindouyun.style.left = current + 'px'
+                animate(jindouyun, current)
+            })
+            //当点击时筋斗云会停在上面
+            list[i].addEventListener('click', function () {
+                current = this.offsetLeft
+                changeColor(this)
+            })
+        }
+
+        //鼠标点击时菜单变色效果
+        function changeColor(e) {
+            for (var i = 0; i < list.length; i++) {
+                list[i].children[0].style.color = '#fff'
+            }
+            e.children[0].style.color = 'rgb(240, 146, 38)'
+        }
+
+        //筋斗云移动动画
+        function animate(target, lgth) {
+            var lg = target.offsetLeft - lgth
+            console.log(lg)
+            var vv = lg / 10
+            var timer = setInterval(function () {
+                if(vv >= 0 && lg <= 0 || vv <= 0 && lg >= 0) {
+                    clearInterval(timer)
+                }else {
+                    //给style.left赋值时记得加px
+                    target.style.left = target.offsetLeft - vv + 'px'
+                    console.log(target.style.left)
+                    lg -= vv;
+                }
+            }, 30)
+        }
+    </script>
+</body>
+
+</html>
