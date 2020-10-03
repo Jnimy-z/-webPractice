@@ -1,0 +1,54 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+li {
+    list-style: none;
+}
+
+.box {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background-color: rgb(43, 139, 223);
+    overflow: hidden;
+}
+
+.box ol {
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+}
+
+.box ol li {
+    float: left;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.box ol .bg {
+    width: 30px;
+}
+
+.father {
+    position: absolute;
+    left: 0;
+    width: 800%;
+    overflow: hidden;
+}
+
+.son {
+    float: left;
+    width: 12.5%;
+    height: 200px;
+}
+
+.son img {
+    width: 100%;
+    height: 100%;
+}
