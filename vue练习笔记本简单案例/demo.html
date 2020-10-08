@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .activ {
+            widows: 200px;
+            height: 200px;
+            background-color: rgb(122, 45, 45);
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        #app {
+            width: 220px;
+            margin-left: 50px;
+            border: 2px solid grey;
+            overflow: hidden;
+        }
+
+        ul {
+            position: relative;
+        }
+        li {
+            list-style: none;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        input {
+            width: 220px;
+            border: none;
+            border-bottom: 2px solid grey;
+            padding-left: 5px;
+            height: 40px;
+            font-size: 19px;
+            /* 取消获得焦点是的边框轮廓 */
+            outline: none;
+        }
+
+        input::placeholder {
+            color: rgb(202, 206, 209);
+        }
+
+        .my_span {
+            position: absolute;
+            right: 20px;
+            bottom: 0;
+            display: none;
+        }
+
+        .item_li {
+            position: relative;
+            border-bottom: 1px solid grey;
+            height: 35px;
+            line-height: 35px;
+            color: rgb(102, 102, 102);
+        }
+
+        .item_li:hover .my_span {
+            display: block;
+        }
+
+        span {
+            cursor: pointer;
+        }
+
+        .clear_li {
+            height: 35px;
+            line-height: 35px;
+        }
+
+        .clear {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" name="" id="" v-model="message" @keyup.enter="add" placeholder="请输入任务">
+        <ul>
+            <li v-for="(item, index) in items" class="item_li">
+                {{index + 1}}.{{item}}
+                <span class="my_span" @click="sub(index)">x</span>
+            </li>
+            <li class="clear_li" v-show="index > 0"><span>共有{{index}}条任务</span><span @click="clear" v-show="isShow"
+                    class="clear">clear</span></li>
+        </ul>
+    </div>
+    <!-- //开发版本的vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: "",
+                index: 0,
+                isShow: false,
+                items: []
+            },
+            methods: {
+                add: function () {
+                    if (this.message != 0) {
+                        //用于存放列表总条数
+                        this.index++;
+                        //向列表中添加数据
+                        this.items.push(this.message)
+                        //清空input表单
+                        this.message = ''
+                        this.isShow = true
+                    }
+                },
+                clear: function () {
+                    //必须要用this.访问data里面的项目
+                    this.items = []
+                    this.index = 0
+                },
+                sub: function (i) {
+                    //console.log(i)
+                    this.items.splice(i, 1)
+                    this.index--;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
