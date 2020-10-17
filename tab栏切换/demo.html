@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .big-box {
+            width: 800px;
+            height: 350px;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+
+        .top-nav {
+            width: 800px;
+            height: 50px;
+            position: relative;
+        }
+
+        .ul-tab {
+            width: 800px;
+            overflow: auto;
+        }
+
+        .ul-tab li {
+            float: left;
+            position: relative;
+            height: 50px;
+            padding: 10px 30px;
+            border-right: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+
+        .ul-tab .current-tab {
+            border-bottom: none;
+        }
+
+        input {
+            height: 100%;
+            width: 100%;
+            outline: none;
+        }
+
+        .delete-span {
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-color: rgb(32, 134, 224);
+            text-align: center;
+            line-height: 15px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            border-bottom-left-radius: 20px;
+            cursor: default;
+        }
+
+        .right-div-add {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-bottom: 1px solid black;
+        }
+
+        .right-div-add span {
+            float: right;
+            padding: 10px;
+            line-height: 100%;
+            cursor: default;
+        }
+
+        /* 内容区域start */
+
+        .content-nav {
+            width: 100%;
+            height: 300px;
+        }
+
+        .content-nav,
+        .content-nav section {
+            height: 100%;
+            width: 100%;
+        }
+
+        .content-nav section {
+            float: left;
+            display: none;
+        }
+
+        /* 当前的内容区域显示出来 */
+        .content-nav .current-sec {
+            display: block;
+        }
+
+        /* 内容区域end */
+    </style>
+
+</head>
+
+<body>
+    <div id="app">
+        <div class="big-box">
+            <nav class="top-nav">
+                <ul class="ul-tab">
+                    <li class="current-tab">
+                        <span class="name-tab">tab1</span><span class="delete-span">x</span>
+                    </li>
+                    <li>
+                        <span class="name-tab">tab2</span><span class="delete-span">x</span>
+                    </li>
+                    <li>
+                        <span class="name-tab">tab3</span><span class="delete-span">x</span>
+                    </li>
+                </ul>
+
+                <div class="right-div-add">
+                    <span>+</span>
+                </div>
+            </nav>
+            <div class="content-nav">
+                <section class="current-sec">内容1</section>
+                <section>内容2</section>
+                <section>内容3</section>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        //页面加载完成后再执行函数
+        window.onload = function () {
+
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    isShow: true
+                }
+            })
+            // 计算添加元素那个标签的长度
+            function initAgain() {
+                //获取添加标签的盒子
+                var topNav = document.querySelector('.top-nav')
+                var rightDivNav = document.querySelector('.right-div-add')
+                var liTabs = document.querySelectorAll('li')
+                //所有li-tab类的总长度为allLiTabLength
+                var allLiTabLength = liTabs[0] ? liTabs[0].offsetWidth * liTabs.length : 0
+                //获取盒子总宽度
+                var bigBox = document.querySelector('.big-box')
+                var bigBoxWidth = bigBox.offsetWidth
+                //获取bigbox高度，因为rightBivNav的宽度要大于等于高度看起来比较顺眼
+                var bigBoxHeight = topNav.offsetHeight
+                //计算得到rightDivNav的宽度，注意这里的width要加单位
+                rightDivNav.style.width = (bigBoxWidth - allLiTabLength > bigBoxHeight ? bigBoxWidth - allLiTabLength : bigBoxHeight) + 'px'
+            }
+
+            initAgain()
+
+
+            //添加全局变量that保存BoxDeal里面的this
+            var that
+            //添加一个box类，里面处理事件
+            class BoxDeal {
+                constructor(box) {
+                    this.box = document.querySelector(box)
+
+                    //li和section的父元素
+                    this.ul = this.box.querySelector('ul')
+                    this.contentNav = this.box.querySelector('.content-nav')
+
+                    this.addLi = this.box.querySelector('.right-div-add')
+                    this.contentNav = this.box.querySelector('.content-nav')
+                    this.init()
+                    //初始化that
+                    that = this
+                }
+                //初始化，给每一个li标签添加点击事件
+                init() {
+                    this.updateNode()
+                    for (var i = 0; i < this.lis.length; i++) {
+                        //给每一个i添加索引
+                        this.lis[i].index = i
+                        //这里的toggleTab不要加（），不然会直接调用
+                        this.lis[i].addEventListener('click', this.toggleTab)
+                        this.deleteSpan[i].addEventListener('click', this.deleteLi)
+                        //添加双击事件
+                        this.editSpans[i].addEventListener('dblclick', this.editTab)
+                        this.sections[i].addEventListener('dblclick', this.editTab)
+                    }
+                    this.addLi.addEventListener('click', this.addTab)
+                }
+
+                editTab(e) {
+                    var _that = this
+                    var beforeText = this.innerHTML
+                    //双击禁止选定文字
+                    window.getSelection ? window.getSelection().removeAllRanges():document.selection.empty()
+                    //在里面生成一个文本框
+                    this.innerHTML = '<input type="text" />'
+                    var input = this.children[0]
+                    input.value = beforeText
+                    input.select()//使文本框中的文字处于选中状态
+                    input.onblur = function() {
+                        //这里面的this指向了input
+                        _that.innerHTML = this.value
+                        this.remove()
+                    }
+                    input.onkeyup = function(e) {
+                        if(e.key == 'Enter') {
+                            //手动调用表单失去焦点事件代码更加简洁
+                            this.blur()
+                        }
+                    }
+                }
+
+                //点击×号删除标签
+                deleteLi(e) {
+                    // 获取当前父元素索引
+                    var index = this.parentNode.index
+                    //阻止冒泡
+                    e.stopPropagation()
+                    //获取父元素的index索引this.parentNode.index
+                    that.lis[index].remove()
+                    that.sections[index].remove()
+                    //更新
+                    that.init()
+                    initAgain()
+                    //当删除的不是选定状态的li时
+                    if (document.querySelector('.current-tab')) return
+                    //切换当前显示为关闭页面的前面一个
+                    index--
+                    //只有前面成立即存在lis[index]才去执行后面一个
+                    //当删除选定状态的tab栏时
+                    if (that.lis[index]) {
+                        that.lis[index].click()
+                    } else if (that.lis.length) {
+                        //当删除第一个tab标签时
+                        that.lis[0].click()
+                    }
+                }
+
+                //切换标签栏以及内容
+                toggleTab() {
+                    //这里的this指向的是this.lis[i]
+                    that.clearClass()
+                    this.className = 'current-tab'
+                    //设置当前的section
+                    that.sections[this.index].className = 'current-sec'
+
+                }
+
+                //在设置之前清除之前的类
+                clearClass() {
+                    for (var i = 0; i < this.lis.length; i++) {
+                        this.lis[i].className = ''
+                        this.sections[i].className = ''
+                    }
+                }
+
+                //更新所有的li和section和delete-span和editSpan
+                updateNode() {
+                    //重新赋值
+                    this.lis = this.box.querySelectorAll('li')
+                    this.sections = this.box.querySelectorAll('section')
+                    this.deleteSpan = this.box.querySelectorAll('.delete-span')
+                    this.editSpans = this.box.querySelectorAll('ul li span:first-child')
+                }
+
+                //添加标签页面
+                addTab() {
+
+                    that.clearClass()
+                    //这里的this指向了right-div-add
+                    //创建元素
+                    var newLi = '<li class="current-tab"><span class="name-tab">tab1</span><span class="delete-span">x</span></li>'
+                    var newSection = '<section class="current-sec">新内容</section>'
+                    //添加元素
+                    that.ul.insertAdjacentHTML('beforeend', newLi)
+                    that.contentNav.insertAdjacentHTML('beforeend', newSection)
+
+                    that.init()
+
+                    //重新计算加号的长度
+                    initAgain()
+                }
+            }
+
+            new BoxDeal('.big-box')
+        }
+    </script>
+
+</body>
+
+</html>
